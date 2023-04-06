@@ -31,3 +31,21 @@ app.post('/api/addToRecent', (req, res) => {
   });
 })
 
+const axios = require('axios');
+
+app.get("/api", async (req, res) => {
+  const location = req.query.location;
+  const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityStateString}&appid=${API_KEY}`;
+  
+  try {
+    const response = await axios.get(apiUrl);
+    const weatherInfo = {
+      temperature: response.data.main.temp,
+      description: response.data.weather[0].description
+    };
+    res.json(weatherInfo);
+  } catch (error) {
+    res.status(400).json({ error: 'Invalid location' });
+    console.log("invalid")
+  }
+});
