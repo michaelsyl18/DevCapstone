@@ -13,8 +13,8 @@ function seed(req) {
 app.use(express.text())
 
 // start the server
-app.listen(5500, () => {
-  console.log("Server is running on port 5500");
+app.listen(5501, () => {
+  console.log("Server is running on port 5501");
 });
 
 app.use(express.static(__dirname))

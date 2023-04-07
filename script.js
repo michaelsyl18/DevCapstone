@@ -15,6 +15,7 @@ var recentCities = []; // ['Dallas,Texas']
 
 const API_KEY = "49cc8c821cd2aff9af04c9f98c36eb74";
 
+
 // UPDATED DOM
 document.addEventListener("DOMContentLoaded", function seed() {
   const city = document.getElementById("search-city");
@@ -93,6 +94,8 @@ function recentCityButtonHandler(cityStateString) {
       console.error(`Error fetching data: ${error}`);
     });
 }
+
+
 
 button.addEventListener("click", function () {
   // Add a click event listener to the button
