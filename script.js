@@ -6,17 +6,15 @@ const timeEl = document.getElementById("time");
 const dateEl = document.getElementById("date");
 const weatherForecastEl = document.getElementById("weather-forecast");
 const searchBtn = document.getElementById("searchBtn");
-const weatherIcon = document.getElementById("weatherIcon");
+const cityInput = document.getElementById("search-city");
 const stateInput = document.getElementById("search-state");
-const deleteBtn = document.getElementById("deleteBtn");
 
-const recentCitiesElement = document.getElementById("recent-cities");
-var recentCities = []; // ['Dallas,Texas']
+
+const recentCitiesElement = document.getElementById("recent-cities")
+var recentCities = [] // ['Dallas,Texas']
 
 const API_KEY = "49cc8c821cd2aff9af04c9f98c36eb74";
 
-
-// UPDATED DOM
 document.addEventListener("DOMContentLoaded", function seed() {
   const city = document.getElementById("search-city");
   const state = document.getElementById("search-state");
@@ -63,95 +61,88 @@ function recentCityButtonHandler(cityStateString) {
 
   // Use the fetch API to make a request to the API URL
   fetch(apiUrl)
-    .then((response) => response.json()) // Convert the response to JSON format
-    .then((data) => {
-      // Extract the latitude and longitude coordinates from the API response
+    .then(response => response.json()) // Convert the response to JSON format
+    .then(data => {
+
+  // Extract the latitude and longitude coordinates from the API response
       const lat = data.coord.lat;
       const long = data.coord.lon;
 
       // Log the coordinates to the console
-      console.log(
-        `The coordinates for ${cityStateString} are: ${lat}, ${long}`
-      );
+      console.log(`The coordinates for ${cityStateString} are: ${lat}, ${long}`);
 
-      fetch(
-        `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${long}&exclude=hourly,minutely&units=imperial&appid=${API_KEY}`
-      )
-        .then((res) => res.json())
-        .then((wData) => {
-          console.log(wData);
+      fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${long}&exclude=hourly,minutely&units=imperial&appid=${API_KEY}`)
+        .then(res => res.json())
+        .then(wData => {
+          console.log(wData)
           showWeatherData(wData);
-        });
+      });
 
       // set search to the recent city.
-      const city = cityStateString.split(",")[0];
-      const state = cityStateString.split(",")[1];
+      const city = cityStateString.split(',')[0]
+      const state = cityStateString.split(',')[1]
       document.getElementById("search-city").value = city;
       document.getElementById("search-state").value = state;
     })
-    .catch((error) => {
+    .catch(error => {
       // Handle any errors that may occur during the API request
       console.error(`Error fetching data: ${error}`);
     });
 }
 
-
-
 button.addEventListener("click", function () {
   // Add a click event listener to the button
 
-  // Define the city and state to search for
-  const city = document.getElementById("search-city");
-  const state = document.getElementById("search-state");
+// Define the city and state to search for
+  const city = document.getElementById('search-city');
+  const state = document.getElementById('search-state');
 
   // Define the API URL with the city and state parameters
   const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city.value.trim()},${state.value.trim()}&appid=${API_KEY}`;
 
   // Use the fetch API to make a request to the API URL
   fetch(apiUrl)
-    .then((response) => response.json()) // Convert the response to JSON format
-    .then((data) => {
-      // Extract the latitude and longitude coordinates from the API response
+    .then(response => response.json()) // Convert the response to JSON format
+    .then(data => {
+
+  // Extract the latitude and longitude coordinates from the API response
       const lat = data.coord.lat;
       const long = data.coord.lon;
 
       // Log the coordinates to the console
       console.log(`The coordinates for ${city}, ${state} are: ${lat}, ${long}`);
 
-      fetch(
-        `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${long}&exclude=hourly,minutely&units=imperial&appid=${API_KEY}`
-      )
-        .then((res) => res.json())
-        .then((wData) => {
-          console.log(wData);
+      fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${long}&exclude=hourly,minutely&units=imperial&appid=${API_KEY}`).then(res => res.json()).then(wData => {
+
+          console.log(wData)
           showWeatherData(wData);
-        });
+          })
     })
-    .catch((error) => {
+    .catch(error => {
       // Handle any errors that may occur during the API request
       console.error(`Error fetching data: ${error}`);
     });
 
-  // do a POST call to the server. The server responds with a list of recent cities.
-  // We set our global variable, recentCities, to the response.
-  postToRecentCities(city.value.trim(), state.value.trim()).then(
-    (response) => (recentCities = response)
-  );
+    // do a POST call to the server. The server responds with a list of recent cities.
+    // We set our global variable, recentCities, to the response. 
+    postToRecentCities(city.value.trim(), state.value.trim())
+      .then(response => recentCities = response);
 });
 
 async function postToRecentCities(city, state) {
-  const cityStateString = `${city},${state}`;
-  const rawResponse = await fetch("/api/addToRecent", {
-    method: "POST",
+  const cityStateString = `${city},${state}` 
+  const rawResponse = await fetch('/api/addToRecent', {
+    method: 'POST',
     headers: {
-      "Content-Type": "text/plain",
+      'Content-Type': 'text/plain'
     },
-    body: cityStateString,
-  });
+    body: cityStateString
+  })
   const content = await rawResponse.json();
-  console.log(content);
+  console.log(content)
   return content;
 }
+
 
 setInterval(() => {
   const time = new Date();
@@ -288,37 +279,27 @@ function showWeatherData(data) {
 
   // Display recent cities.
   let recentCitiesButtons = "";
-  console.log("recentCities", recentCities);
-
-  if (recentCities && recentCities["recentCities"]) {
-    recentCities["recentCities"].forEach((city, idx) => {
-      // ['Dallas,Texas', 'Seattle,Washington']
-      // recentCityButtonHandler('Seattle,Washington')
-      recentCitiesButtons += `
+  console.log('recentCities', recentCities);
+  recentCities['recentCities'].forEach((city, idx) => { // ['Dallas,Texas', 'Seattle,Washington']
+    // recentCityButtonHandler('Seattle,Washington')
+    recentCitiesButtons += `
       <div><button onclick="recentCityButtonHandler('${city}')">${city}</button></div>
-    `;
-    });
-  }
+    `
+  })
 
   recentCitiesElement.innerHTML = recentCitiesButtons;
 }
 
-// add event listeners to the input fields to listen for the enter key
-document
-  .getElementById("search-city")
-  .addEventListener("keydown", function (event) {
-    if (event.key === "Enter") {
-      // simulate a click on the search button
-      document.getElementById("searchBtn").click();
-    }
-  });
+cityInput.addEventListener("keydown", function (event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    searchBtn.click();
+  }
+});
 
-document
-  .getElementById("search-state")
-  .addEventListener("keydown", function (event) {
-    if (event.key === "Enter") {
-      // simulate a click on the search button
-      document.getElementById("searchBtn").click();
-    }
-  });
-
+stateInput.addEventListener("keydown", function (event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    searchBtn.click();
+  }
+});
